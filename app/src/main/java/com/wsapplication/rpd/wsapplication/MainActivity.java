@@ -7,11 +7,22 @@ import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.json.JSONStringer;
 import org.ksoap2.SoapEnvelope;
 import org.ksoap2.serialization.SoapObject;
 import org.ksoap2.serialization.SoapPrimitive;
 import org.ksoap2.serialization.SoapSerializationEnvelope;
 import org.ksoap2.transport.AndroidHttpTransport;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Vector;
+import org.ksoap2.serialization.KvmSerializable;
+import org.ksoap2.serialization.PropertyInfo;
+
+import java.util.Hashtable;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -19,12 +30,13 @@ public class MainActivity extends AppCompatActivity {
     // Web Servisimizdeki Namspace alanı
     private final String _Namspace      =   "http://tempuri.org/";
     // Web Servimizdeki Method ismi
-    private final String _MethodName    =   "HelloWorld";
+    private final String _MethodName    =   "SG_WebService";
     // Namspace ile Method isminin birleşimi
-    private final String _Action        =   "http://tempuri.org/HelloWorld";
+    private final String _Action        =   "http://tempuri.org/SG_WebService";
     // Web Servisimizin Adresi
     private final String _Url           =   "http://rpdwebservice.azurewebsites.net/WebService1.asmx"; ///??
     private String _ResultValue         =   "";
+
 
 
     @Override
@@ -33,6 +45,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         new _WebServiceAsyncTask().execute();
     }
+
 
     public class _WebServiceAsyncTask extends AsyncTask<Void,Void,Void>
     {
@@ -52,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
             // Web Servisimize gönderilcek parametreleri ekliyoruz.
           //  request.addProperty("s1", _birinci_sayi.toString());
           //  request.addProperty("s2",_birinci_sayi.toString());
-
+            
 
             SoapSerializationEnvelope envelope = new SoapSerializationEnvelope(SoapEnvelope.VER12);
             envelope.env ="http://schemas.xmlsoap.org/soap/envelope/";
@@ -67,8 +80,13 @@ public class MainActivity extends AppCompatActivity {
             try {
 
                 aht.call(_Action,envelope);
+
                 SoapPrimitive response = (SoapPrimitive)envelope.getResponse();
                 // Web servisimizden geri gelen sonucu değişkenimize aktarıyoruz.
+
+                SoapObject body = (SoapObject)envelope.bodyIn;
+
+
                 _ResultValue=response.toString();
             }catch (Exception e){
 
@@ -86,7 +104,5 @@ public class MainActivity extends AppCompatActivity {
 
         }
     }
-
-
 
 }
